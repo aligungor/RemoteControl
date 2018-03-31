@@ -13,11 +13,13 @@ import MediaPlayer
 class ViewController: UIViewController {
     
     var player: AVPlayer?
+    private var volumeNotification = Notification.Name(rawValue: "AVSystemController_SystemVolumeDidChangeNotification")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupPlayer()
         setupRemoteCommandCenter(enable: true)
+        setupVolumeObservation()
     }
     
     func setupRemoteCommandCenter(enable: Bool) {
@@ -40,8 +42,21 @@ class ViewController: UIViewController {
         remoteCommandCenter.togglePlayPauseCommand.isEnabled = enable
     }
     
+    func setupVolumeObservation() {
+        NotificationCenter.default.addObserver(self, selector: #selector(volumeChanged(notification:)), name: volumeNotification, object: nil)
+    }
+    
     deinit {
         setupRemoteCommandCenter(enable: false)
+        NotificationCenter.default.removeObserver(self, name: volumeNotification, object: nil)
+    }
+    
+    @objc func volumeChanged(notification: Notification) {
+        guard let userInfo = notification.userInfo, let volume = userInfo["AVSystemController_AudioVolumeNotificationParameter"] else {
+            return
+        }
+        print("volume changed: ")
+        print(volume)
     }
     
     @objc func remoteCommandCenterPauseCommandHandler() {
