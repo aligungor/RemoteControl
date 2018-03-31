@@ -38,7 +38,6 @@ class ViewController: UIViewController {
         remoteCommandCenter.playCommand.isEnabled = enable
         remoteCommandCenter.stopCommand.isEnabled = enable
         remoteCommandCenter.togglePlayPauseCommand.isEnabled = enable
-        
     }
     
     deinit {
